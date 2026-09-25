@@ -47,7 +47,6 @@ export default function ConteudoPage() {
   const [difficulty, setDifficulty] = useState<'facil' | 'medio' | 'dificil'>('facil');
   const [lines, setLines] = useState<LineEntry[]>([{ text: '', gaps: [] }]);
   const [saving, setSaving] = useState(false);
-
   const [lotoWord, setLotoWord] = useState('');
   const [lotoLevelId, setLotoLevelId] = useState('');
   const [lotoImage, setLotoImage] = useState<File | null>(null);
@@ -232,7 +231,66 @@ export default function ConteudoPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-10 max-w-2xl">
-        <h1 className="text-2xl font-bold mb-6">Cadastrar Letra de Música</h1>
+        <h1 className="text-2xl font-bold mb-6">Criação de Conteúdo</h1>
+        <Tabs defaultValue="musica">
+          <TabsList className="mb-6">
+            <TabsTrigger value="musica">Letra de Música</TabsTrigger>
+            <TabsTrigger value="lotoleitura">Lotoleitura (Imagem + Palavra)</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="lotoleitura">
+            <Card className="p-6">
+              <form onSubmit={handleLotoSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lotoWord">Palavra</Label>
+                  <Input
+                    id="lotoWord"
+                    value={lotoWord}
+                    onChange={(e) => setLotoWord(e.target.value)}
+                    placeholder="Ex: banana"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Esta palavra será usada nos 3 jogos de Lotoleitura (vogais, consoantes e completa).
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Nível de Alfabetização</Label>
+                  <Select value={lotoLevelId} onValueChange={setLotoLevelId}>
+                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                    <SelectContent>
+                      {levels.map((l) => (
+                        <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lotoImage">Imagem</Label>
+                  <Input
+                    id="lotoImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setLotoImage(e.target.files?.[0] ?? null)}
+                    required
+                  />
+                  {lotoImage && (
+                    <img
+                      src={URL.createObjectURL(lotoImage)}
+                      alt="Pré-visualização"
+                      className="h-32 rounded-lg object-contain border mt-2"
+                    />
+                  )}
+                </div>
+                <Button type="submit" disabled={lotoSaving} className="w-full">
+                  <Upload className="w-4 h-4 mr-2" />
+                  {lotoSaving ? 'Enviando...' : 'Salvar Palavra'}
+                </Button>
+              </form>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="musica">
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -332,6 +390,8 @@ export default function ConteudoPage() {
             </Button>
           </form>
         </Card>
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>
