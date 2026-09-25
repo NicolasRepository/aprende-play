@@ -74,7 +74,7 @@ export default function SobrePage() {
           </section>
 
           {/* Tech Stack */}
-          <section>
+          {/*<section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Tecnologia</h2>
             <div className="flex flex-wrap gap-2">
               {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'PostgreSQL'].map(
@@ -88,7 +88,7 @@ export default function SobrePage() {
                 )
               )}
             </div>
-          </section>
+          </section>*/}
         </div>
       </main>
 
