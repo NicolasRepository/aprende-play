@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import type { GameProps, LotoleituraWord } from '@/lib/types';
 import { GameShell, GameTextBox, GameFooterBar, VirtualKeyboard } from '@/components/GameUI';
-import { useLotoleituraWords } from '@/hooks/use-games';
+import { LotoleituraSelectScreen } from './LotoleituraSelectScreen';
 import { maskWord, stripAccents } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
 
@@ -11,6 +11,9 @@ type LotoMode = 'lotoleitura_vogais' | 'lotoleitura_consoantes' | 'lotoleitura_c
 
 export function Lotoleitura({ game, onScore, onComplete, onExit }: GameProps) {
   const mode = game.game_type as LotoMode;
+  const [word, setWord] = useState<LotoleituraWord | null>(null);
+
+  if (!word) return <LotoleituraSelectScreen onSelect={setWord} onExit={onExit} />;
 
   return (
     <GameShell
@@ -19,9 +22,11 @@ export function Lotoleitura({ game, onScore, onComplete, onExit }: GameProps) {
       onScore={onScore}
       onComplete={onComplete}
       onExit={onExit}
+      extraCompleteAction={{ label: 'Escolher Outra Imagem', onClick: () => setWord(null) }}
     >
       {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
-        <LotoleituraLoader
+        <LotoleituraContent
+          word={word}
           mode={mode}
           isHighContrast={isHighContrast}
           isFixedFooter={isFixedFooter}
@@ -34,15 +39,8 @@ export function Lotoleitura({ game, onScore, onComplete, onExit }: GameProps) {
   );
 }
 
-function LotoleituraLoader(props: Omit<Parameters<typeof LotoleituraContent>[0], 'words'>) {
-  const { words, loading } = useLotoleituraWords();
-  if (loading) return <p className="p-6 text-center">Carregando palavras...</p>;
-  if (!words.length) return <p className="p-6 text-center">Nenhuma palavra cadastrada ainda.</p>;
-  return <LotoleituraContent {...props} words={words} />;
-}
-
 function LotoleituraContent({
-  words,
+  word,
   mode,
   isHighContrast,
   isFixedFooter,
@@ -50,7 +48,7 @@ function LotoleituraContent({
   addScore,
   complete,
 }: {
-  words: LotoleituraWord[];
+  word: LotoleituraWord;
   mode: LotoMode;
   isHighContrast: boolean;
   isFixedFooter: boolean;
@@ -58,30 +56,20 @@ function LotoleituraContent({
   addScore: (p: number) => void;
   complete: (s: number) => void;
 }) {
-  const [step, setStep] = useState(0);
   const [typed, setTyped] = useState<string[]>([]);
   const [shakeIndex, setShakeIndex] = useState<number | null>(null);
   const scoreRef = useRef(0);
 
-  const current = words[step];
-  const mask = useMemo(() => maskWord(current.word, mode), [current, mode]);
+  const mask = useMemo(() => maskWord(word.word, mode), [word, mode]);
   const blankIndexes = useMemo(
     () => mask.map((m, i) => (m.hidden ? i : -1)).filter((i) => i !== -1),
     [mask]
   );
 
-  const goNext = () => {
-    setTyped([]);
-    setTimeout(() => {
-      if (step + 1 < words.length) setStep((s) => s + 1);
-      else complete(scoreRef.current);
-    }, 600);
-  };
-
   const handlePress = (letter: string) => {
     if (typed.length >= blankIndexes.length) return;
     const targetIndex = blankIndexes[typed.length];
-    const expected = current.word[targetIndex];
+    const expected = word.word[targetIndex];
 
     // compara ignorando acento (teclado não tem vogais acentuadas),
     // mas guarda o caractere original da palavra para exibir corretamente
@@ -95,7 +83,10 @@ function LotoleituraContent({
     addScore(2);
     const nextTyped = [...typed, expected];
     setTyped(nextTyped);
-    if (nextTyped.length === blankIndexes.length) goNext();
+
+    if (nextTyped.length === blankIndexes.length) {
+      setTimeout(() => complete(scoreRef.current), 600);
+    }
   };
 
   const handleBackspace = () => setTyped((prev) => prev.slice(0, -1));
@@ -103,8 +94,8 @@ function LotoleituraContent({
   return (
     <div className={cn('flex flex-col items-center gap-8 p-4 md:p-8', isFixedFooter && 'pb-40 md:pb-48')}>
       <img
-        src={current.image_url}
-        alt={current.word}
+        src={word.image_url}
+        alt={word.word}
         className={cn(
           'rounded-2xl object-contain shadow-lg bg-white',
           isLousa ? 'h-64 md:h-80' : 'h-48 md:h-64'
@@ -120,35 +111,3 @@ function LotoleituraContent({
                 highContrast={isHighContrast}
                 size={isLousa ? 'lg' : 'md'}
                 className="w-12 md:w-14 text-center"
-              >
-                {m.char.toUpperCase()}
-              </GameTextBox>
-            );
-          }
-          const blankPos = blankIndexes.indexOf(i);
-          const letter = typed[blankPos];
-          return (
-            <GameTextBox
-              key={i}
-              highContrast={isHighContrast}
-              size={isLousa ? 'lg' : 'md'}
-              variant={letter ? 'success' : 'highlight'}
-              className={cn('w-12 md:w-14 text-center', shakeIndex === i && 'animate-bounce')}
-            >
-              {letter ? letter.toUpperCase() : ''}
-            </GameTextBox>
-          );
-        })}
-      </div>
-
-      <GameFooterBar isFixedFooter={isFixedFooter} isHighContrast={isHighContrast}>
-        <VirtualKeyboard
-          onPress={handlePress}
-          onBackspace={handleBackspace}
-          isHighContrast={isHighContrast}
-          isLousa={isLousa}
-        />
-      </GameFooterBar>
-    </div>
-  );
-}
