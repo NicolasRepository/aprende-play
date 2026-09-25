@@ -47,16 +47,6 @@ export default function SobrePage() {
                   desc: 'Modo visual em preto e branco para máxima legibilidade e acessibilidade.',
                 },
                 {
-                  icon: LayoutGrid,
-                  title: 'Arquitetura Modular',
-                  desc: 'Novos jogos podem ser adicionados facilmente, herdando a interface base e acessibilidade.',
-                },
-                {
-                  icon: Users,
-                  title: 'Sistema de Roles',
-                  desc: 'Usuários comuns apenas jogam; usuários autorizados podem adicionar conteúdos customizados.',
-                },
-                {
                   icon: BookOpen,
                   title: 'Filtros por Disciplina',
                   desc: 'Filtre jogos por disciplina (Português, Matemática, Ciências, etc.) e ano escolar.',
