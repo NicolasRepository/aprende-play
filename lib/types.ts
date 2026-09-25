@@ -96,8 +96,10 @@ export interface GameProps {
   game: GameRecord;
   onScore: (score: number) => void;
   onComplete: (finalScore: number) => void;
+  onExit?: () => void;
 }
 
 export function isAuthorized(role: UserRole | undefined | null): boolean {
   return role === 'usuario_autorizado';
 }
+
