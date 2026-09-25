@@ -7,9 +7,9 @@ import { useSongLines } from '@/hooks/use-games';
 import { shuffle } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
 
-export function TextoFatiado({ game, onScore, onComplete }: GameProps) {
+export function TextoFatiado({ game, onScore, onComplete, onExit }: GameProps) {
   return (
-    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete}>
+    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete} onExit={onExit}>
       {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
         <FatiadoContent
           songId={game.song_id}
