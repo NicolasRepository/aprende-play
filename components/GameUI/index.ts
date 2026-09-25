@@ -5,3 +5,4 @@ export { AccessibilityPanel } from './AccessibilityPanel';
 export { GameShell } from './GameShell';
 export { GameFooterBar } from './GameFooterBar';
 export { GameCompleteScreen } from './GameCompleteScreen';
+export { VirtualKeyboard } from './VirtualKeyboard';
