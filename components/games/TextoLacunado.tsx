@@ -1,18 +1,32 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { GameProps } from '@/lib/types';
+import type { GameProps, Song } from '@/lib/types';
 import { GameShell, GameButton, GameTextBox, GameFooterBar } from '@/components/GameUI';
+import { SongSelectScreen } from './SongSelectScreen';
 import { useSongLines } from '@/hooks/use-games';
 import { shuffle, normalize } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
 
 export function TextoLacunado({ game, onScore, onComplete, onExit }: GameProps) {
+  const [song, setSong] = useState<Song | null>(null);
+
+  if (!song) {
+    return <SongSelectScreen onSelect={setSong} onExit={onExit} />;
+  }
+
   return (
-    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete} onExit={onExit}>
+    <GameShell
+      title={game.title}
+      description={game.description ?? undefined}
+      onScore={onScore}
+      onComplete={onComplete}
+      onExit={onExit}
+      extraCompleteAction={{ label: 'Escolher Outra Música', onClick: () => setSong(null) }}
+    >
       {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
         <LacunadoContent
-          songId={game.song_id}
+          songId={song.id}
           isHighContrast={isHighContrast}
           isFixedFooter={isFixedFooter}
           isLousa={isLousa}
@@ -32,7 +46,7 @@ export function LacunadoContent({
   addScore,
   complete,
 }: {
-  songId: string | null;
+  songId: string;
   isHighContrast: boolean;
   isFixedFooter: boolean;
   isLousa: boolean;
@@ -65,25 +79,15 @@ export function LacunadoContent({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6 p-4 md:p-8', isFixedFooter && 'pb-28')}>
+    <div className={cn('flex flex-col gap-6 p-4 md:p-8', isFixedFooter && 'pb-32 md:pb-36')}>
       <div className="flex flex-col gap-2">
         {lines.map((line) => {
           const isGap = !!line.gap_word;
           const isDone = filled[line.id];
           const isCurrent = current?.id === line.id;
           return (
-            <GameTextBox
-              key={line.id}
-              highContrast={isHighContrast}
-              variant={isCurrent ? 'highlight' : 'default'}
-              size={isLousa ? 'lg' : 'md'}
-            >
-              {isGap
-                ? line.text.replace(
-                    new RegExp(line.gap_word!, 'i'),
-                    isDone ? line.gap_word! : '_____'
-                  )
-                : line.text}
+            <GameTextBox key={line.id} highContrast={isHighContrast} variant={isCurrent ? 'highlight' : 'default'} size={isLousa ? 'lg' : 'md'}>
+              {isGap ? line.text.replace(new RegExp(line.gap_word!, 'i'), isDone ? line.gap_word! : '_____') : line.text}
             </GameTextBox>
           );
         })}
@@ -92,13 +96,7 @@ export function LacunadoContent({
       <GameFooterBar isFixedFooter={isFixedFooter} isHighContrast={isHighContrast}>
         <div className={cn('grid gap-2', isLousa ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-3 md:grid-cols-4')}>
           {options.map((opt) => (
-            <GameButton
-              key={opt}
-              highContrast={isHighContrast}
-              size={isLousa ? 'xl' : 'md'}
-              variant="secondary"
-              onClick={() => handlePick(opt)}
-            >
+            <GameButton key={opt} highContrast={isHighContrast} size={isLousa ? 'xl' : 'md'} variant="secondary" onClick={() => handlePick(opt)}>
               {opt}
             </GameButton>
           ))}
