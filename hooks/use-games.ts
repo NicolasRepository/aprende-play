@@ -74,3 +74,14 @@ export function useSongLinesWithGaps(songId: string | null | undefined) {
 
   return { playLines, loading };
 }
+
+export function useLotoleituraWords() {
+  const [words, setWords] = useState<LotoleituraWord[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchLotoleituraWords()
+      .then((w) => setWords(shuffle(w)))
+      .finally(() => setLoading(false));
+  }, []);
+  return { words, loading };
+}
