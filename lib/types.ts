@@ -62,7 +62,21 @@ export interface PlayLine {
   gap: { word: string; options: string[] } | null;
 }
 
-export type GameType = 'texto_lacunado' | 'texto_fatiado' | 'fatiado_lacunado';
+export type GameType =
+  | 'texto_lacunado'
+  | 'texto_fatiado'
+  | 'fatiado_lacunado'
+  | 'lotoleitura_vogais'
+  | 'lotoleitura_consoantes'
+  | 'lotoleitura_completa';
+
+export interface LotoleituraWord {
+  id: string;
+  word: string;
+  image_url: string;
+  literacy_level_id: string | null;
+  created_at: string;
+}
 
 export interface GameRecord {
   id: string;
