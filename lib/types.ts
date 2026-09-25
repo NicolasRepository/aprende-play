@@ -1,4 +1,4 @@
-export type UserRole = 'usuario_comum' | 'usuario_autorizado';
+export type UserRole = 'usuario_comum' | 'usuario_autorizado' | 'usuario_admin';
 
 export interface Profile {
   id: string;
@@ -120,5 +120,9 @@ export interface GameProps {
 }
 
 export function isAuthorized(role: UserRole | undefined | null): boolean {
-  return role === 'usuario_autorizado';
+  return role === 'usuario_autorizado' || role === 'usuario_admin';
+}
+
+export function isAdmin(role: UserRole | undefined | null): boolean {
+  return role === 'usuario_admin';
 }
