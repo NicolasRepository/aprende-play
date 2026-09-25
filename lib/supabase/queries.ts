@@ -1,5 +1,5 @@
 import { supabase } from './client';
-import type { LiteracyLevel, Subject, GameRecord, Song, SongLine, RawSongLineWithGaps } from '@/lib/types';
+import type { LiteracyLevel, Subject, GameRecord, Song, SongLine, RawSongLineWithGaps, LotoleituraWord } from '@/lib/types';
 
 export async function fetchSongLinesWithGaps(songId: string): Promise<RawSongLineWithGaps[]> {
   const { data, error } = await supabase
@@ -51,4 +51,9 @@ export async function fetchSongs(): Promise<Song[]> {
     .order('title');
   if (error) throw error;
   return (data ?? []) as Song[];
+}
+export async function fetchLotoleituraWords(): Promise<LotoleituraWord[]> {
+  const { data, error } = await supabase.from('lotoleitura_words').select('*').order('created_at');
+  if (error) throw error;
+  return (data ?? []) as LotoleituraWord[];
 }
