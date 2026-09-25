@@ -7,15 +7,16 @@ import { useAuth } from '@/lib/auth-context';
 import { Navbar } from '@/components/site/Navbar';
 import { Footer } from '@/components/site/Footer';
 import { Card } from '@/components/ui/card';
-import { useGames, useSongs } from '@/hooks/use-games';
+import { useGames, use, useLotoleituraWords } from '@/hooks/use-games';
 import { resolveIcon } from '@/lib/icon-map';
-import { Play, Sparkles, Music, Search, Lock } from 'lucide-react';
+import { Play, Sparkles, Music, ImageIcon, Search, Lock } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, profile, loading } = useAuth();
   const { games, loading: gamesLoading } = useGames();
   const { songs } = useSongs();
+  const { words: lotoWords } = useLotoleituraWords();
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -97,9 +98,15 @@ export default function DashboardPage() {
                         <span className="flex items-center gap-1.5 text-sm font-medium text-brand-600">
                           <Play className="h-4 w-4" /> Jogar agora
                         </span>
-                        <span className="flex items-center gap-1 text-xs text-gray-400">
-                          <Music className="h-3.5 w-3.5" /> {songs.length} música{songs.length !== 1 ? 's' : ''}
-                        </span>
+                        {game.game_type.startsWith('lotoleitura') ? (
+                          <span className="flex items-center gap-1 text-xs text-gray-400">
+                            <ImageIcon className="h-3.5 w-3.5" /> {lotoWords.length} imagem{lotoWords.length !== 1 ? 'ns' : ''}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-xs text-gray-400">
+                            <Music className="h-3.5 w-3.5" /> {songs.length} música{songs.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </Card>
