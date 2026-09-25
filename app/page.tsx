@@ -209,13 +209,17 @@ export default function HomePage() {
                   {user ? 'Explorar Jogos' : 'Criar Conta Grátis'}
                 </Button>
               </Link>
+            {!user && (
               <Link href="/login">
-                {!user && (
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white"> 
-                    Já tenho conta 
-                  </Button>
-                )}
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="bg-transparent border-white text-white hover:bg-white/10 hover:text-white"
+                > 
+                  Já tenho conta 
+                </Button>
               </Link>
+            )}
             </div>
             <div className="flex flex-wrap justify-center gap-6 mt-8 text-white/80 text-sm">
               <span className="flex items-center gap-1.5">
