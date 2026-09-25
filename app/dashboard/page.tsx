@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -9,17 +9,29 @@ import { Footer } from '@/components/site/Footer';
 import { Card } from '@/components/ui/card';
 import { useGames, useSongs } from '@/hooks/use-games';
 import { resolveIcon } from '@/lib/icon-map';
-import { Play, Sparkles, Music } from 'lucide-react';
+import { Play, Sparkles, Music, Search, Lock } from 'lucide-react';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, profile, loading } = useAuth();
   const { games, loading: gamesLoading } = useGames();
   const { songs } = useSongs();
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
   }, [user, loading, router]);
+
+  const filteredGames = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return games;
+    return games.filter(
+      (game) =>
+        game.title.toLowerCase().includes(q) ||
+        (game.description ?? '').toLowerCase().includes(q) ||
+        (game.subject?.name ?? '').toLowerCase().includes(q)
+    );
+  }, [games, query]);
 
   if (loading) {
     return (
@@ -47,11 +59,29 @@ export default function DashboardPage() {
           )}
         </div>
 
+        <div className="mb-8 max-w-md">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar jogo por nome ou disciplina..."
+              className="w-full rounded-xl border-2 border-brand-200 pl-9 pr-3 py-2.5 text-sm focus:border-brand-400 focus:outline-none"
+            />
+          </div>
+          {!gamesLoading && query && (
+            <p className="text-xs text-gray-500 mt-2">
+              {filteredGames.length} jogo{filteredGames.length !== 1 ? 's' : ''} encontrado{filteredGames.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+
         {gamesLoading ? (
           <p className="text-center py-20 text-gray-500">Carregando jogos...</p>
-        ) : (
+        ) : filteredGames.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {games.map((game) => {
+            {filteredGames.map((game) => {
               const Icon = resolveIcon(game.subject?.icon);
               return (
                 <Link key={game.slug} href={`/jogar/${game.slug}`}>
@@ -76,6 +106,14 @@ export default function DashboardPage() {
                 </Link>
               );
             })}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-brand-50 text-brand-300 mb-4">
+              <Lock className="h-10 w-10" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-700 mb-2">Nenhum jogo encontrado</h3>
+            <p className="text-gray-500 max-w-sm">Tente buscar por outro termo.</p>
           </div>
         )}
       </main>
