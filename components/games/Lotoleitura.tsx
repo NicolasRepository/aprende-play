@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { GameProps, LotoleituraWord } from '@/lib/types';
-import { GameShell, GameTextBox, VirtualKeyboard } from '@/components/GameUI';
+import { GameShell, GameTextBox, GameFooterBar, VirtualKeyboard } from '@/components/GameUI';
 import { useLotoleituraWords } from '@/hooks/use-games';
 import { maskWord, stripAccents } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
@@ -20,10 +20,11 @@ export function Lotoleitura({ game, onScore, onComplete, onExit }: GameProps) {
       onComplete={onComplete}
       onExit={onExit}
     >
-      {({ isHighContrast, isLousa, addScore, complete }) => (
+      {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
         <LotoleituraLoader
           mode={mode}
           isHighContrast={isHighContrast}
+          isFixedFooter={isFixedFooter}
           isLousa={isLousa}
           addScore={addScore}
           complete={complete}
@@ -44,6 +45,7 @@ function LotoleituraContent({
   words,
   mode,
   isHighContrast,
+  isFixedFooter,
   isLousa,
   addScore,
   complete,
@@ -51,6 +53,7 @@ function LotoleituraContent({
   words: LotoleituraWord[];
   mode: LotoMode;
   isHighContrast: boolean;
+  isFixedFooter: boolean;
   isLousa: boolean;
   addScore: (p: number) => void;
   complete: (s: number) => void;
@@ -99,7 +102,7 @@ function LotoleituraContent({
   const handleBackspace = () => setTyped((prev) => prev.slice(0, -1));
 
   return (
-    <div className="flex flex-col items-center gap-8 p-4 md:p-8">
+    <div className={cn('flex flex-col items-center gap-8 p-4 md:p-8', isFixedFooter && 'pb-40 md:pb-48')}>
       <img
         src={current.image_url}
         alt={current.word}
@@ -139,12 +142,15 @@ function LotoleituraContent({
         })}
       </div>
 
-      <VirtualKeyboard
-        onPress={handlePress}
-        onBackspace={handleBackspace}
-        isHighContrast={isHighContrast}
-        isLousa={isLousa}
-      />
+      <GameFooterBar isFixedFooter={isFixedFooter} isHighContrast={isHighContrast}>
+        <VirtualKeyboard
+          onPress={handlePress}
+          onBackspace={handleBackspace}
+          isHighContrast={isHighContrast}
+          isLousa={isLousa}
+        />
+      </GameFooterBar>
     </div>
   );
+}
 }
