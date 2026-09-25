@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/auth-context';
 import { Navbar } from '@/components/site/Navbar';
 import { Footer } from '@/components/site/Footer';
 import { Button } from '@/components/ui/button';
-import { GAME_REGISTRY } from '@/lib/game-registry';
+import { useGames } from '@/hooks/use-games';
+import { resolveIcon } from '@/lib/icon-map';
 import {
   BookOpen,
   Calculator,
@@ -31,7 +32,7 @@ const subjectIcons: Record<string, typeof BookOpen> = {
 
 export default function HomePage() {
   const { user } = useAuth();
-
+  const { games: featuredGames } = useGames();
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
@@ -82,12 +83,12 @@ export default function HomePage() {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-bold text-gray-900">Jogos em Destaque</h3>
                     <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
-                      {GAME_REGISTRY.length} jogos
+                      {featuredGames.slice(0, 3).length} jogos
                     </span>
                   </div>
                   <div className="space-y-3">
-                    {GAME_REGISTRY.map((game, idx) => {
-                      const Icon = subjectIcons[game.subjectSlug] ?? BookOpen;
+                    {featuredGames.slice(0, 3).map((game) => {
+                      const Icon = resolveIcon(game.subject?.icon);
                       return (
                         <div
                           key={game.slug}
@@ -95,7 +96,7 @@ export default function HomePage() {
                         >
                           <div
                             className="flex h-10 w-10 items-center justify-center rounded-lg text-white"
-                            style={{ backgroundColor: game.color }}
+                            style={{ backgroundColor: game.subject?.color ?? '#FF6600' }}
                           >
                             <Icon className="h-5 w-5" />
                           </div>
