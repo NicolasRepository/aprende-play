@@ -33,7 +33,7 @@ export function GameLayout({
     <div
       className={cn(
         'min-h-screen flex flex-col transition-colors duration-300',
-        isHighContrast ? 'bg-white text-black' : 'bg-gradient-to-b from-brand-50 to-white text-gray-900'
+        isHighContrast ? 'bg-white text-black' : 'bg-gradient-to-b from-brand-50 to-white text-black-900'
       )}
     >
       {/* Header */}
@@ -63,7 +63,7 @@ export function GameLayout({
               {title}
             </h1>
             {description && (
-              <p className={cn('text-xs md:text-sm hidden sm:block', isHighContrast ? 'text-gray-300' : 'text-gray-500')}>
+              <p className={cn('text-xs md:text-sm hidden sm:block', isHighContrast ? 'text-black-300' : 'text-black-500')}>
                 {description}
               </p>
             )}
