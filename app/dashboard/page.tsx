@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import { Navbar } from '@/components/site/Navbar';
 import { Footer } from '@/components/site/Footer';
 import { Card } from '@/components/ui/card';
-import { useGames, use, useLotoleituraWords } from '@/hooks/use-games';
+import { useGames, useSongs, useLotoleituraWords } from '@/hooks/use-games';
 import { resolveIcon } from '@/lib/icon-map';
 import { Play, Sparkles, Music, ImageIcon, Search, Lock } from 'lucide-react';
 
