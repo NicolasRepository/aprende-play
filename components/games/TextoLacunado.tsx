@@ -24,7 +24,7 @@ export function TextoLacunado({ game, onScore, onComplete }: GameProps) {
   );
 }
 
-function LacunadoContent({
+export function LacunadoContent({
   songId,
   isHighContrast,
   isFixedFooter,
