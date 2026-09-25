@@ -32,3 +32,30 @@ export function buildGapOptions(word: string, baseOptions: string[], pool: strin
   while (set.size < min && extras.length) set.add(extras.pop()!);
   return shuffle(Array.from(set));
 }
+
+const VOWELS = new Set(['a', 'e', 'i', 'o', 'u', 'á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú']);
+
+export function isVowel(char: string): boolean {
+  return VOWELS.has(char.toLowerCase());
+}
+
+export function isLetter(char: string): boolean {
+  return /[a-zà-úA-ZÀ-Ú]/.test(char);
+}
+
+export interface MaskedChar {
+  char: string;
+  hidden: boolean;
+}
+
+export function maskWord(
+  word: string,
+  mode: 'lotoleitura_vogais' | 'lotoleitura_consoantes' | 'lotoleitura_completa'
+): MaskedChar[] {
+  return word.split('').map((char) => {
+    if (!isLetter(char)) return { char, hidden: false };
+    if (mode === 'lotoleitura_completa') return { char, hidden: true };
+    if (mode === 'lotoleitura_vogais') return { char, hidden: !isVowel(char) };
+    return { char, hidden: isVowel(char) };
+  });
+}
