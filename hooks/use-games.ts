@@ -1,13 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  fetchGames,
-  fetchGameBySlug,
-  fetchSongs,
-  fetchSongLines,
-} from '@/lib/supabase/queries';
-import type { GameRecord, Song, SongLine } from '@/lib/types';
+import { fetchGames, fetchGameBySlug, fetchSongs, fetchSongLinesWithGaps } from '@/lib/supabase/queries';
+import type { GameRecord, Song, PlayLine } from '@/lib/types';
+import { buildGapOptions } from '@/lib/game-utils';
 
 export function useGames() {
   const [games, setGames] = useState<GameRecord[]>([]);
@@ -40,20 +36,41 @@ export function useSongs() {
   return { songs, loading };
 }
 
-export function useSongLines(songId: string | null | undefined) {
-  const [lines, setLines] = useState<SongLine[]>([]);
+// substitui o antigo useSongLines: já sorteia a lacuna de cada linha e monta as opções
+export function useSongLinesWithGaps(songId: string | null | undefined) {
+  const [playLines, setPlayLines] = useState<PlayLine[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (!songId) {
-      setLines([]);
+      setPlayLines([]);
       setLoading(false);
       return;
     }
+    let active = true;
     setLoading(true);
-    fetchSongLines(songId).then((l) => {
-      setLines(l);
+    fetchSongLinesWithGaps(songId).then((rawLines) => {
+      if (!active) return;
+      const allOptions = rawLines.flatMap((l) => l.gaps.flatMap((g) => [g.gap_word, ...g.gap_options]));
+      const enriched: PlayLine[] = rawLines.map((line) => {
+        if (!line.gaps.length) {
+          return { id: line.id, line_order: line.line_order, text: line.text, gap: null };
+        }
+        const chosen = line.gaps[Math.floor(Math.random() * line.gaps.length)];
+        return {
+          id: line.id,
+          line_order: line.line_order,
+          text: line.text,
+          gap: { word: chosen.gap_word, options: buildGapOptions(chosen.gap_word, chosen.gap_options, allOptions) },
+        };
+      });
+      setPlayLines(enriched);
       setLoading(false);
     });
+    return () => {
+      active = false;
+    };
   }, [songId]);
-  return { lines, loading };
+
+  return { playLines, loading };
 }
