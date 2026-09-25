@@ -36,5 +36,5 @@ function Phases(props: {
   if (phase === 'ordering') {
     return <FatiadoContent {...props} onOrdered={() => setPhase('filling')} />;
   }
-  return <LacunadoInner {...props} />;
+  return <LacunadoContent {...props} />;
 }
