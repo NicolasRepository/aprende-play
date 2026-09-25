@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { GameProps } from '@/lib/types';
 import { GameShell } from '@/components/GameUI';
 import { FatiadoContent } from './TextoFatiado';
-import { LacunadoInner } from './TextoLacunado.internal';
+import { LacunadoContent } from './TextoLacunado';
 
 export function FatiadoELacunado({ game, onScore, onComplete }: GameProps) {
   return (
