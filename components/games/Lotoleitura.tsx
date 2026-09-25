@@ -111,3 +111,35 @@ function LotoleituraContent({
                 highContrast={isHighContrast}
                 size={isLousa ? 'lg' : 'md'}
                 className="w-12 md:w-14 text-center"
+              >
+                {m.char.toUpperCase()}
+              </GameTextBox>
+            );
+          }
+          const blankPos = blankIndexes.indexOf(i);
+          const letter = typed[blankPos];
+          return (
+            <GameTextBox
+              key={i}
+              highContrast={isHighContrast}
+              size={isLousa ? 'lg' : 'md'}
+              variant={letter ? 'success' : 'highlight'}
+              className={cn('w-12 md:w-14 text-center', shakeIndex === i && 'animate-bounce')}
+            >
+              {letter ? letter.toUpperCase() : ''}
+            </GameTextBox>
+          );
+        })}
+      </div>
+
+      <GameFooterBar isFixedFooter={isFixedFooter} isHighContrast={isHighContrast}>
+        <VirtualKeyboard
+          onPress={handlePress}
+          onBackspace={handleBackspace}
+          isHighContrast={isHighContrast}
+          isLousa={isLousa}
+        />
+      </GameFooterBar>
+    </div>
+  );
+}
