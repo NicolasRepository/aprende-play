@@ -22,10 +22,19 @@ export function Navbar() {
   const { user, profile, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Verificações de permissão
+  const isAdmin = profile?.role === 'usuario_admin';
+  const isAutorizado = profile?.role === 'usuario_autorizado' || isAdmin; // Admin também é considerado autorizado
+
+  // Links dinâmicos baseados na permissão
   const navLinks = [
     { href: '/', label: 'Início' },
     { href: '/dashboard', label: 'Jogos' },
     { href: '/sobre', label: 'Sobre' },
+    // Mostra "Criar Conteúdo" se for autorizado ou admin
+    ...(isAutorizado ? [{ href: '/conteudo', label: 'Criar Conteúdo' }] : []),
+    // Mostra "Administração" apenas se for admin
+    ...(isAdmin ? [{ href: '/admin', label: 'Administração' }] : []),
   ];
 
   const initials = profile?.full_name
@@ -88,7 +97,8 @@ export function Navbar() {
                   <p className="text-xs text-gray-500">{profile?.email}</p>
                   <p className="text-xs mt-1">
                     <span className="inline-flex items-center rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
-                      {profile?.role === 'usuario_autorizado' ? 'Autorizado' : 'Usuário'}
+                      {/* Ajuste visual na badge do perfil, se quiser exibir "Admin" */}
+                      {isAdmin ? 'Administrador' : isAutorizado ? 'Autorizado' : 'Usuário'}
                     </span>
                   </p>
                 </div>
@@ -102,7 +112,7 @@ export function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => signOut()}
-                  className="text-red-600 focus:text-red-600"
+                  className="text-red-600 focus:text-red-600 cursor-pointer"
                 >
                   Sair
                 </DropdownMenuItem>
@@ -146,7 +156,7 @@ export function Navbar() {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-brand-100 bg-white px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-brand-100 bg-white px-4 py-3 space-y-1 shadow-lg">
           {navLinks.map((link) => (
             <Link
               key={link.href}
