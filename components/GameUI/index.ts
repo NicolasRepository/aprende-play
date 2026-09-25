@@ -3,3 +3,4 @@ export { GameTextBox } from './GameTextBox';
 export { GameLayout } from './GameLayout';
 export { AccessibilityPanel } from './AccessibilityPanel';
 export { GameShell } from './GameShell';
+export { GameFooterBar } from './GameFooterBar';
