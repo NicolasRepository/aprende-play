@@ -13,7 +13,9 @@ export default function PlayGamePage() {
   const { user, loading: authLoading } = useAuth();
   const { game, loading: gameLoading } = useGameBySlug(slug);
 
-  const handleScore = useCallback((_s: number) => {}, []);
+  const handleScore = useCallback((_score: number) => {
+    // Poderia atualizar um placar em tempo real aqui, se necessário
+  }, []);
 
   const handleComplete = useCallback(
     async (finalScore: number) => {
@@ -30,6 +32,10 @@ export default function PlayGamePage() {
     },
     [user, slug]
   );
+
+  const handleExit = useCallback(() => {
+    router.push('/dashboard');
+  }, [router]);
 
   if (authLoading || gameLoading) {
     return (
@@ -48,9 +54,10 @@ export default function PlayGamePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Jogo não encontrado</h1>
+        <p className="text-gray-500">O jogo "{slug}" não existe ou não está disponível.</p>
         <button
           onClick={() => router.push('/dashboard')}
-          className="px-6 py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          className="px-6 py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-600 transition-colors"
         >
           Voltar para o Dashboard
         </button>
@@ -59,7 +66,30 @@ export default function PlayGamePage() {
   }
 
   const GameComponent = getGameComponent(game.game_type);
-  if (!GameComponent) return null;
 
-  return <GameComponent game={game} onScore={handleScore} onComplete={handleComplete} />;
+  if (!GameComponent) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
+        <h1 className="text-2xl font-bold text-gray-900">Tipo de jogo não suportado</h1>
+        <p className="text-gray-500">O tipo "{game.game_type}" ainda não tem um componente registrado.</p>
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="px-6 py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-600 transition-colors"
+        >
+          Voltar para o Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      <GameComponent
+        game={game}
+        onScore={handleScore}
+        onComplete={handleComplete}
+        onExit={handleExit}
+      />
+    </div>
+  );
 }
