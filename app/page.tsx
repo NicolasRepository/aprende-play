@@ -206,18 +206,16 @@ export default function HomePage() {
             <div className="flex flex-wrap justify-center gap-3">
               <Link href={user ? '/dashboard' : '/cadastro'}>
                 <Button size="lg" className="bg-white text-brand-600 hover:bg-brand-50">
-                  {user ? 'Explar Jogos' : 'Criar Conta Grátis'}
+                  {user ? 'Explorar Jogos' : 'Criar Conta Grátis'}
                 </Button>
               </Link>
               <Link href="/login">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white">
-                  Já tenho conta
-                </Button>
+                {!user ? '<Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white"> Já tenho conta </Button>'}
               </Link>
             </div>
             <div className="flex flex-wrap justify-center gap-6 mt-8 text-white/80 text-sm">
               <span className="flex items-center gap-1.5">
-                <Check className="h-4 w-4" /> Grátis para sempre
+                <Check className="h-4 w-4" /> Grátis
               </span>
               <span className="flex items-center gap-1.5">
                 <Check className="h-4 w-4" /> Acessível
