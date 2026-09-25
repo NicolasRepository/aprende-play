@@ -33,16 +33,14 @@ export function GameLayout({
     <div
       className={cn(
         'min-h-screen flex flex-col transition-colors duration-300',
-        isHighContrast ? 'bg-black text-white' : 'bg-gradient-to-b from-brand-50 to-white text-gray-900'
+        isHighContrast ? 'bg-white text-black' : 'bg-gradient-to-b from-brand-50 to-white text-gray-900'
       )}
     >
       {/* Header */}
       <header
         className={cn(
           'flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b-2 shrink-0',
-          isHighContrast
-            ? 'bg-black border-white'
-            : 'bg-white border-brand-100 shadow-sm'
+          isHighContrast ? 'bg-white border-black' : 'bg-white border-brand-100 shadow-sm'
         )}
       >
         <div className="flex items-center gap-3">
@@ -51,9 +49,7 @@ export function GameLayout({
               onClick={onExit}
               className={cn(
                 'p-2 rounded-lg transition-colors',
-                isHighContrast
-                  ? 'text-white hover:bg-white hover:text-black'
-                  : 'text-brand-600 hover:bg-brand-50'
+                isHighContrast ? 'bg-black text-white' : 'bg-brand-100 text-brand-700'  // mantém contraste no badge, ok
               )}
               aria-label="Sair do jogo"
             >
@@ -63,7 +59,7 @@ export function GameLayout({
             </button>
           )}
           <div>
-            <h1 className={cn('text-lg md:text-xl font-bold', isHighContrast ? 'text-white' : 'text-brand-600')}>
+            <h1 className={cn('text-lg md:text-xl font-bold', isHighContrast ? 'text-black' : 'text-brand-600')}>
               {title}
             </h1>
             {description && (
@@ -78,9 +74,7 @@ export function GameLayout({
           <div
             className={cn(
               'flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold text-sm md:text-base',
-              isHighContrast
-                ? 'bg-white text-black'
-                : 'bg-brand-100 text-brand-700'
+              isHighContrast ? 'bg-black text-white' : 'bg-brand-100 text-brand-700' 
             )}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -98,12 +92,7 @@ export function GameLayout({
       </header>
 
       {/* Game content */}
-      <main
-        className={cn(
-          'flex-1 flex flex-col',
-          isFixedFooter ? 'pb-64' : 'p-4 md:p-8'
-        )}
-      >
+      <main className={cn('flex-1 flex flex-col', isFixedFooter ? 'pb-24 md:pb-28' : 'p-4 md:p-8')}>
         <div className={cn('flex-1', !isFixedFooter && 'flex flex-col')}>
           {children}
         </div>
