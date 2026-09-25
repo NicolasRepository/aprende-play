@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -26,6 +26,16 @@ interface LiteracyLevel {
   name: string;
 }
 
+interface GapEntry {
+  word: string;
+  options: string;
+}
+
+interface LineEntry {
+  text: string;
+  gaps: GapEntry[];
+}
+
 export default function ConteudoPage() {
   const router = useRouter();
   const { user, profile, loading } = useAuth();
@@ -34,8 +44,44 @@ export default function ConteudoPage() {
   const [artist, setArtist] = useState('');
   const [levelId, setLevelId] = useState('');
   const [difficulty, setDifficulty] = useState<'facil' | 'medio' | 'dificil'>('facil');
-  const [lyrics, setLyrics] = useState('');
+  const [lines, setLines] = useState<LineEntry[]>([{ text: '', gaps: [] }]);
   const [saving, setSaving] = useState(false);
+
+  const addLine = () => setLines((prev) => [...prev, { text: '', gaps: [] }]);
+
+  const removeLine = (i: number) =>
+    setLines((prev) => prev.filter((_, idx) => idx !== i));
+
+  const updateLineText = (i: number, text: string) =>
+    setLines((prev) => prev.map((l, idx) => (idx === i ? { ...l, text } : l)));
+
+  const addGap = (i: number) =>
+    setLines((prev) =>
+      prev.map((l, idx) =>
+        idx === i ? { ...l, gaps: [...l.gaps, { word: '', options: '' }] } : l
+      )
+    );
+
+  const removeGap = (i: number, gi: number) =>
+    setLines((prev) =>
+      prev.map((l, idx) =>
+        idx === i ? { ...l, gaps: l.gaps.filter((_, gidx) => gidx !== gi) } : l
+      )
+    );
+
+  const updateGap = (i: number, gi: number, field: keyof GapEntry, value: string) =>
+    setLines((prev) =>
+      prev.map((l, idx) =>
+        idx === i
+          ? {
+              ...l,
+              gaps: l.gaps.map((g, gidx) =>
+                gidx === gi ? { ...g, [field]: value } : g
+              ),
+            }
+          : l
+      )
+    );
 
   useEffect(() => {
     if (!loading && (!user || !isAuthorized(profile?.role))) {
@@ -55,10 +101,19 @@ export default function ConteudoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const lines = lyrics.split('\n').map((l) => l.trim()).filter(Boolean);
-    if (!title || lines.length === 0) {
+    const validLines = lines.filter((l) => l.text.trim());
+    if (!title || validLines.length === 0) {
       toast.error('Preencha o título e ao menos uma linha da letra');
       return;
+    }
+
+    for (const l of validLines) {
+      for (const g of l.gaps) {
+        if (g.word.trim() && !l.text.includes(g.word.trim())) {
+          toast.error(`A lacuna "${g.word}" precisa existir no texto: "${l.text}"`);
+          return;
+        }
+      }
     }
 
     setSaving(true);
@@ -79,22 +134,51 @@ export default function ConteudoPage() {
       return;
     }
 
-    const { error: linesError } = await supabase.from('song_lines').insert(
-      lines.map((text, i) => ({ song_id: song.id, line_order: i + 1, text }))
-    );
+    const { data: insertedLines, error: linesError } = await supabase
+      .from('song_lines')
+      .insert(
+        validLines.map((l, i) => ({ song_id: song.id, line_order: i + 1, text: l.text.trim() }))
+      )
+      .select('id, line_order');
 
-    setSaving(false);
-    if (linesError) {
-      toast.error(`Erro ao criar linhas: ${linesError.message}`);
+    if (linesError || !insertedLines) {
+      setSaving(false);
+      toast.error(`Erro ao criar linhas: ${linesError?.message}`);
       return;
     }
 
+    const gapRows = insertedLines.flatMap((row, i) =>
+      validLines[i].gaps
+        .filter((g) => g.word.trim())
+        .map((g) => {
+          const word = g.word.trim();
+          const optionSet = new Set(
+            [word, ...g.options.split(',').map((o) => o.trim())].filter(Boolean)
+          );
+          return {
+            song_line_id: row.id,
+            gap_word: word,
+            gap_options: Array.from(optionSet),
+          };
+        })
+    );
+
+    if (gapRows.length > 0) {
+      const { error: gapsError } = await supabase.from('song_line_gaps').insert(gapRows);
+      if (gapsError) {
+        setSaving(false);
+        toast.error(`Erro ao criar lacunas: ${gapsError.message}`);
+        return;
+      }
+    }
+
+    setSaving(false);
     toast.success('Música cadastrada com sucesso!');
     setTitle('');
     setArtist('');
     setLevelId('');
     setDifficulty('facil');
-    setLyrics('');
+    setLines([{ text: '', gaps: [] }]);
   };
 
   return (
@@ -134,15 +218,67 @@ export default function ConteudoPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="lyrics">Letra (uma linha por verso)</Label>
-              <Textarea
-                id="lyrics"
-                value={lyrics}
-                onChange={(e) => setLyrics(e.target.value)}
-                rows={10}
-                required
-              />
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Linhas da Música e Lacunas</Label>
+                <Button type="button" size="sm" variant="outline" onClick={addLine}>
+                  <Plus className="w-4 h-4 mr-1" /> Linha
+                </Button>
+              </div>
+              {lines.map((line, i) => (
+                <Card key={i} className="p-3 space-y-2 bg-muted/30">
+                  <div className="flex gap-2 items-start">
+                    <Input
+                      placeholder={`Verso ${i + 1}`}
+                      value={line.text}
+                      onChange={(e) => updateLineText(i, e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => removeLine(i)}
+                      disabled={lines.length === 1}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {line.gaps.map((gap, gi) => (
+                    <div key={gi} className="flex gap-2 items-center pl-4">
+                      <Input
+                        placeholder="Palavra a lacunar (deve existir no verso)"
+                        value={gap.word}
+                        onChange={(e) => updateGap(i, gi, 'word', e.target.value)}
+                        className="max-w-[220px]"
+                      />
+                      <Input
+                        placeholder="Opções erradas (separadas por vírgula)"
+                        value={gap.options}
+                        onChange={(e) => updateGap(i, gi, 'options', e.target.value)}
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => removeGap(i, gi)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="link"
+                    onClick={() => addGap(i)}
+                    className="pl-4"
+                  >
+                    <Plus className="w-3 h-3 mr-1" /> Adicionar lacuna nesta linha
+                  </Button>
+                </Card>
+              ))}
             </div>
             <Button type="submit" disabled={saving} className="w-full">
               {saving ? 'Salvando...' : 'Salvar Música'}
