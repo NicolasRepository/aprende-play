@@ -17,10 +17,10 @@ const variantStyles = {
 };
 
 const hcVariantStyles = {
-  default: 'bg-black text-white border-white',
-  success: 'bg-black text-white border-white',
-  error: 'bg-black text-white border-white',
-  highlight: 'bg-black text-white border-white',
+  default: 'bg-white text-black border-black',
+  success: 'bg-white text-black border-black',
+  error: 'bg-white text-black border-black',
+  highlight: 'bg-white text-black border-black ring-2 ring-black',
 };
 
 const sizeStyles = {
