@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchGames, fetchGameBySlug, fetchSongs, fetchSongLinesWithGaps } from '@/lib/supabase/queries';
-import type { GameRecord, Song, PlayLine } from '@/lib/types';
-import { buildGapOptions } from '@/lib/game-utils';
+import { fetchGames, fetchGameBySlug, fetchSongs, fetchSongLinesWithGaps, fetchLotoleituraWords } from '@/lib/supabase/queries';
+import type { GameRecord, Song, PlayLine, LotoleituraWord } from '@/lib/types';
+import { buildGapOptions, shuffle } from '@/lib/game-utils';
 
 export function useGames() {
   const [games, setGames] = useState<GameRecord[]>([]);
