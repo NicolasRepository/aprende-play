@@ -52,13 +52,3 @@ export async function fetchSongs(): Promise<Song[]> {
   if (error) throw error;
   return (data ?? []) as Song[];
 }
-
-export async function fetchSongLines(songId: string): Promise<SongLine[]> {
-  const { data, error } = await supabase
-    .from('song_lines')
-    .select('*')
-    .eq('song_id', songId)
-    .order('line_order');
-  if (error) throw error;
-  return data ?? [];
-}
