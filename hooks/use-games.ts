@@ -4,56 +4,17 @@ import { useEffect, useState } from 'react';
 import {
   fetchGames,
   fetchGameBySlug,
-  fetchLiteracyLevels,
-  fetchSubjects,
+  fetchSongs,
   fetchSongLines,
 } from '@/lib/supabase/queries';
-import type { GameRecord, LiteracyLevel, Subject, SongLine } from '@/lib/types';
+import type { GameRecord, Song, SongLine } from '@/lib/types';
 
-export function useSubjects() {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    fetchSubjects().then(setSubjects).finally(() => setLoading(false));
-  }, []);
-  return { subjects, loading };
-}
-
-export function useLiteracyLevels() {
-  const [levels, setLevels] = useState<LiteracyLevel[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    fetchLiteracyLevels().then(setLevels).finally(() => setLoading(false));
-  }, []);
-  return { levels, loading };
-}
-
-export function useGames(filters?: { subjectSlug?: string; literacyLevelSlug?: string }) {
+export function useGames() {
   const [games, setGames] = useState<GameRecord[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    let active = true;
-    setLoading(true);
-    fetchGames().then((all) => {
-      if (!active) return;
-      const filtered = all.filter((g) => {
-        const subjectOk =
-          !filters?.subjectSlug || filters.subjectSlug === 'todos' || g.subject?.slug === filters.subjectSlug;
-        const levelOk =
-          !filters?.literacyLevelSlug ||
-          filters.literacyLevelSlug === 'todos' ||
-          g.literacy_level?.slug === filters.literacyLevelSlug;
-        return subjectOk && levelOk;
-      });
-      setGames(filtered);
-      setLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, [filters?.subjectSlug, filters?.literacyLevelSlug]);
-
+    fetchGames().then(setGames).finally(() => setLoading(false));
+  }, []);
   return { games, loading };
 }
 
@@ -68,6 +29,15 @@ export function useGameBySlug(slug: string) {
     });
   }, [slug]);
   return { game, loading };
+}
+
+export function useSongs() {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchSongs().then(setSongs).finally(() => setLoading(false));
+  }, []);
+  return { songs, loading };
 }
 
 export function useSongLines(songId: string | null | undefined) {
