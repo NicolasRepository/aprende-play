@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { GameProps, LotoleituraWord } from '@/lib/types';
 import { GameShell, GameTextBox, GameFooterBar, VirtualKeyboard } from '@/components/GameUI';
 import { useLotoleituraWords } from '@/hooks/use-games';
@@ -60,8 +60,8 @@ function LotoleituraContent({
 }) {
   const [step, setStep] = useState(0);
   const [typed, setTyped] = useState<string[]>([]);
-  const [score, setScore] = useState(0);
   const [shakeIndex, setShakeIndex] = useState<number | null>(null);
+  const scoreRef = useRef(0);
 
   const current = words[step];
   const mask = useMemo(() => maskWord(current.word, mode), [current, mode]);
@@ -70,13 +70,11 @@ function LotoleituraContent({
     [mask]
   );
 
-  const goNext = (points: number) => {
-    const newScore = score + points;
-    setScore(newScore);
+  const goNext = () => {
     setTyped([]);
     setTimeout(() => {
       if (step + 1 < words.length) setStep((s) => s + 1);
-      else complete(newScore);
+      else complete(scoreRef.current);
     }, 600);
   };
 
@@ -93,10 +91,11 @@ function LotoleituraContent({
       return;
     }
 
+    scoreRef.current += 2;
     addScore(2);
     const nextTyped = [...typed, expected];
     setTyped(nextTyped);
-    if (nextTyped.length === blankIndexes.length) goNext(0);
+    if (nextTyped.length === blankIndexes.length) goNext();
   };
 
   const handleBackspace = () => setTyped((prev) => prev.slice(0, -1));
