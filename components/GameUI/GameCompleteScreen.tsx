@@ -8,9 +8,10 @@ interface Props {
   isHighContrast: boolean;
   onPlayAgain: () => void;
   onExit?: () => void;
+  extraAction?: { label: string; onClick: () => void };
 }
 
-export function GameCompleteScreen({ score, isHighContrast, onPlayAgain, onExit }: Props) {
+export function GameCompleteScreen({ score, isHighContrast, onPlayAgain, onExit, extraAction }: Props) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 text-center animate-pop-in">
       <div className="text-6xl">🎉</div>
@@ -24,6 +25,11 @@ export function GameCompleteScreen({ score, isHighContrast, onPlayAgain, onExit 
         <GameButton variant="primary" highContrast={isHighContrast} size="lg" onClick={onPlayAgain}>
           Jogar Novamente
         </GameButton>
+        {extraAction && (
+          <GameButton variant="secondary" highContrast={isHighContrast} size="lg" onClick={extraAction.onClick}>
+            {extraAction.label}
+          </GameButton>
+        )}
         {onExit && (
           <GameButton variant="ghost" highContrast={isHighContrast} size="lg" onClick={onExit}>
             Voltar ao Menu
