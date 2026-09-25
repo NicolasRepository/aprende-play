@@ -18,11 +18,11 @@ const variantStyles = {
 };
 
 const hcVariantStyles = {
-  primary: 'bg-white text-black border-2 border-white hover:bg-gray-200',
-  secondary: 'bg-black text-white border-2 border-white hover:bg-gray-900',
-  success: 'bg-white text-black border-2 border-white hover:bg-gray-200',
-  danger: 'bg-white text-black border-2 border-white hover:bg-gray-200',
-  ghost: 'bg-transparent text-white border-2 border-white hover:bg-white hover:text-black',
+  primary: 'bg-black text-white border-2 border-black hover:bg-gray-800',
+  secondary: 'bg-white text-black border-2 border-black hover:bg-gray-100',
+  success: 'bg-black text-white border-2 border-black hover:bg-gray-800',
+  danger: 'bg-black text-white border-2 border-black hover:bg-gray-800',
+  ghost: 'bg-transparent text-black border-2 border-black hover:bg-black hover:text-white',
 };
 
 const sizeStyles = {
