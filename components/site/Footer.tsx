@@ -8,9 +8,12 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white font-bold text-sm">
-              AP
-            </div>
+            <Image
+            src={logo}
+            alt="AprendePlay"
+            className="h-10 w-10 object-contain"
+            priority
+            />
             <span className="text-lg font-bold text-gray-900">
               Aprende<span className="text-brand-500">Play</span>
             </span>
