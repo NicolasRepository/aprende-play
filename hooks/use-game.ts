@@ -1,68 +1,60 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  fetchGames,
+  fetchGameBySlug,
+  fetchSongs,
+  fetchSongLines,
+} from '@/lib/supabase/queries';
+import type { GameRecord, Song, SongLine } from '@/lib/types';
 
-export function useGameConfig<T>(initialValue: T) {
-  const [config, setConfig] = useState<T>(initialValue);
-
-  const update = useCallback((patch: Partial<T>) => {
-    setConfig((prev) => ({ ...prev, ...patch }));
-  }, []);
-
-  const reset = useCallback(() => setConfig(initialValue), [initialValue]);
-
-  return { config, setConfig, update, reset };
-}
-
-export function useScore() {
-  const [score, setScore] = useState(0);
-
-  const add = useCallback((points: number) => {
-    setScore((prev) => prev + points);
-  }, []);
-
-  const reset = useCallback(() => setScore(0), []);
-
-  return { score, setScore, add, reset };
-}
-
-export function useTimer(autoStart = false) {
-  const [seconds, setSeconds] = useState(0);
-  const [running, setRunning] = useState(autoStart);
-
+export function useGames() {
+  const [games, setGames] = useState<GameRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (!running) return;
-    const interval = setInterval(() => {
-      setSeconds((s) => s + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [running]);
-
-  const start = useCallback(() => setRunning(true), []);
-  const stop = useCallback(() => setRunning(false), []);
-  const reset = useCallback(() => {
-    setSeconds(0);
-    setRunning(false);
+    fetchGames().then(setGames).finally(() => setLoading(false));
   }, []);
-
-  return { seconds, running, start, stop, reset };
+  return { games, loading };
 }
 
-export function useShuffle<T>(items: T[]): T[] {
-  const [shuffled, setShuffled] = useState<T[]>(items);
+export function useGameBySlug(slug: string) {
+  const [game, setGame] = useState<GameRecord | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    fetchGameBySlug(slug).then((g) => {
+      setGame(g);
+      setLoading(false);
+    });
+  }, [slug]);
+  return { game, loading };
+}
 
-  const reshuffle = useCallback(() => {
-    const copy = [...items];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
+// NOVO: catálogo de músicas
+export function useSongs() {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchSongs().then(setSongs).finally(() => setLoading(false));
+  }, []);
+  return { songs, loading };
+}
+
+export function useSongLines(songId: string | null | undefined) {
+  const [lines, setLines] = useState<SongLine[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!songId) {
+      setLines([]);
+      setLoading(false);
+      return;
     }
-    setShuffled(copy);
-  }, [items]);
-
-  useEffect(() => {
-    reshuffle();
-  }, [reshuffle]);
-
-  return shuffled;
+    setLoading(true);
+    fetchSongLines(songId).then((l) => {
+      setLines(l);
+      setLoading(false);
+    });
+  }, [songId]);
+  return { lines, loading };
 }
