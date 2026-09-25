@@ -11,6 +11,10 @@ export function normalize(s: string): string {
   return s.trim().toLowerCase();
 }
 
+export function stripAccents(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
