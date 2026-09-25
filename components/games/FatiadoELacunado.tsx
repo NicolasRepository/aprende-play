@@ -6,9 +6,9 @@ import { GameShell } from '@/components/GameUI';
 import { FatiadoContent } from './TextoFatiado';
 import { LacunadoContent } from './TextoLacunado';
 
-export function FatiadoELacunado({ game, onScore, onComplete }: GameProps) {
+export function FatiadoELacunado({ game, onScore, onComplete, onExit }: GameProps) {
   return (
-    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete}>
+    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete} onExit={onExit}>
       {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
         <Phases
           songId={game.song_id}
