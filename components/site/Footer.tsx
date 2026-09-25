@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image'; 
+import logo from '@/components/site/logo.png';
 
 export function Footer() {
   return (
