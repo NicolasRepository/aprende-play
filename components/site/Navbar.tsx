@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import logo from '@/components/site/logo.png';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +36,12 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 text-white font-bold text-lg shadow-md shadow-brand-500/30">
-            AP
-          </div>
+          <Image
+            src={logo}
+            alt="AprendePlay"
+            className="h-10 w-10 object-contain"
+            priority
+          />
           <span className="text-xl font-bold text-gray-900 hidden sm:block">
             Aprende<span className="text-brand-500">Play</span>
           </span>
