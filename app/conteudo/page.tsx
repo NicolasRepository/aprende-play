@@ -48,6 +48,52 @@ export default function ConteudoPage() {
   const [lines, setLines] = useState<LineEntry[]>([{ text: '', gaps: [] }]);
   const [saving, setSaving] = useState(false);
 
+  const [lotoWord, setLotoWord] = useState('');
+  const [lotoLevelId, setLotoLevelId] = useState('');
+  const [lotoImage, setLotoImage] = useState<File | null>(null);
+  const [lotoSaving, setLotoSaving] = useState(false);
+
+  const handleLotoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lotoWord.trim() || !lotoImage) {
+      toast.error('Preencha a palavra e selecione uma imagem');
+      return;
+    }
+
+    setLotoSaving(true);
+    const ext = lotoImage.name.split('.').pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('lotoleitura-images')
+      .upload(path, lotoImage);
+
+    if (uploadError) {
+      toast.error(`Erro ao enviar imagem: ${uploadError.message}`);
+      setLotoSaving(false);
+      return;
+    }
+
+    const { data: publicUrl } = supabase.storage.from('lotoleitura-images').getPublicUrl(path);
+
+    const { error: insertError } = await supabase.from('lotoleitura_words').insert({
+      word: lotoWord.trim(),
+      image_url: publicUrl.publicUrl,
+      literacy_level_id: lotoLevelId || null,
+    });
+
+    setLotoSaving(false);
+    if (insertError) {
+      toast.error(`Erro ao cadastrar palavra: ${insertError.message}`);
+      return;
+    }
+
+    toast.success('Palavra cadastrada com sucesso!');
+    setLotoWord('');
+    setLotoLevelId('');
+    setLotoImage(null);
+  };
+  
   const addLine = () => setLines((prev) => [...prev, { text: '', gaps: [] }]);
 
   const removeLine = (i: number) =>
