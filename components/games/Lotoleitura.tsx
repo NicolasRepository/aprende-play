@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import type { GameProps, LotoleituraWord } from '@/lib/types';
 import { GameShell, GameTextBox, VirtualKeyboard } from '@/components/GameUI';
 import { useLotoleituraWords } from '@/hooks/use-games';
-import { maskWord, normalize } from '@/lib/game-utils';
+import { maskWord, stripAccents } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
 
 type LotoMode = 'lotoleitura_vogais' | 'lotoleitura_consoantes' | 'lotoleitura_completa';
@@ -82,14 +82,16 @@ function LotoleituraContent({
     const targetIndex = blankIndexes[typed.length];
     const expected = current.word[targetIndex];
 
-    if (normalize(letter) !== normalize(expected)) {
+    // compara ignorando acento (teclado não tem vogais acentuadas),
+    // mas guarda o caractere original da palavra para exibir corretamente
+    if (stripAccents(letter).toLowerCase() !== stripAccents(expected).toLowerCase()) {
       setShakeIndex(targetIndex);
       setTimeout(() => setShakeIndex(null), 400);
       return;
     }
 
     addScore(2);
-    const nextTyped = [...typed, letter.toLowerCase()];
+    const nextTyped = [...typed, expected];
     setTyped(nextTyped);
     if (nextTyped.length === blankIndexes.length) goNext(0);
   };
