@@ -41,8 +41,25 @@ export interface SongLine {
   song_id: string;
   line_order: number;
   text: string;
-  gap_word: string | null;
+}
+
+export interface SongLineGap {
+  id: string;
+  song_line_id: string;
+  gap_word: string;
   gap_options: string[];
+}
+
+export interface RawSongLineWithGaps extends SongLine {
+  gaps: SongLineGap[];
+}
+
+// linha já "jogável": lacuna sorteada + opções completadas, pronta pro jogo usar
+export interface PlayLine {
+  id: string;
+  line_order: number;
+  text: string;
+  gap: { word: string; options: string[] } | null;
 }
 
 export type GameType = 'texto_lacunado' | 'texto_fatiado' | 'fatiado_lacunado';
@@ -73,17 +90,20 @@ export interface UserProgress {
 export type DeviceMode = 'pc' | 'lousa';
 export type VisualMode = 'cores_vivas' | 'alto_contraste';
 export type LayoutMode = 'tela_cheia' | 'rodape_fixo';
+export type CorrectionMode = 'imediata' | 'livre'; // NOVO
 
 export interface AccessibilitySettings {
   deviceMode: DeviceMode;
   visualMode: VisualMode;
   layoutMode: LayoutMode;
+  correctionMode: CorrectionMode; // NOVO
 }
 
 export const DEFAULT_ACCESSIBILITY: AccessibilitySettings = {
   deviceMode: 'pc',
   visualMode: 'cores_vivas',
   layoutMode: 'tela_cheia',
+  correctionMode: 'imediata',
 };
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
