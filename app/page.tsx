@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { Navbar } from '@/components/site/Navbar';
 import { Footer } from '@/components/site/Footer';
+import { ScrollSpySidebar } from '@/components/site/ScrollSpySidebar';
 import { Button } from '@/components/ui/button';
 import { useGames } from '@/hooks/use-games';
 import { resolveIcon } from '@/lib/icon-map';
@@ -37,6 +38,15 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
+      <ScrollSpySidebar
+        sections={[
+          { id: 'inicio', label: 'Início' },
+          { id: 'recursos', label: 'Recursos' },
+          { id: 'como-funciona', label: 'Como Funciona' },
+          { id: 'comece', label: 'Comece Agora' },
+        ]}
+      />
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-brand-50">
         <div className="absolute inset-0 opacity-5">
@@ -117,7 +127,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-white">
+      <section id="recursos" className="py-16 md:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
@@ -166,7 +176,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 md:py-24 bg-brand-50">
+      <section id="como-funciona" className="py-16 md:py-24 bg-brand-50">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
@@ -194,7 +204,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 md:py-24 bg-white">
+      <section id="comece" className="py-16 md:py-24 bg-white">
         <div className="mx-auto max-w-4xl px-4 md:px-6">
           <div className="rounded-3xl bg-gradient-to-r from-brand-500 to-brand-600 p-8 md:p-12 text-center shadow-2xl shadow-brand-500/20">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
