@@ -1,18 +1,32 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { GameProps } from '@/lib/types';
+import type { GameProps, Song } from '@/lib/types';
 import { GameShell, GameButton, GameTextBox, GameFooterBar } from '@/components/GameUI';
+import { SongSelectScreen } from './SongSelectScreen';
 import { useSongLines } from '@/hooks/use-games';
 import { shuffle } from '@/lib/game-utils';
 import { cn } from '@/lib/utils';
 
 export function TextoFatiado({ game, onScore, onComplete, onExit }: GameProps) {
+  const [song, setSong] = useState<Song | null>(null);
+
+  if (!song) {
+    return <SongSelectScreen onSelect={setSong} onExit={onExit} />;
+  }
+
   return (
-    <GameShell title={game.title} description={game.description ?? undefined} onScore={onScore} onComplete={onComplete} onExit={onExit}>
+    <GameShell
+      title={game.title}
+      description={game.description ?? undefined}
+      onScore={onScore}
+      onComplete={onComplete}
+      onExit={onExit}
+      extraCompleteAction={{ label: 'Escolher Outra Música', onClick: () => setSong(null) }}
+    >
       {({ isHighContrast, isFixedFooter, isLousa, addScore, complete }) => (
         <FatiadoContent
-          songId={game.song_id}
+          songId={song.id}
           isHighContrast={isHighContrast}
           isFixedFooter={isFixedFooter}
           isLousa={isLousa}
@@ -33,7 +47,7 @@ export function FatiadoContent({
   complete,
   onOrdered,
 }: {
-  songId: string | null;
+  songId: string;
   isHighContrast: boolean;
   isFixedFooter: boolean;
   isLousa: boolean;
@@ -72,7 +86,7 @@ export function FatiadoContent({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6 p-4 md:p-8', isFixedFooter && 'pb-28')}>
+    <div className={cn('flex flex-col gap-6 p-4 md:p-8', isFixedFooter && 'pb-32 md:pb-36')}>
       <div className="flex flex-col gap-2">
         {pickedIds.map((id, idx) => (
           <GameTextBox key={id} highContrast={isHighContrast} variant="success" size={isLousa ? 'lg' : 'md'}>
@@ -90,13 +104,7 @@ export function FatiadoContent({
         <GameFooterBar isFixedFooter={isFixedFooter} isHighContrast={isHighContrast}>
           <div className={cn('grid gap-2', isLousa ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-2 md:grid-cols-3')}>
             {remaining.map((line) => (
-              <GameButton
-                key={line.id}
-                highContrast={isHighContrast}
-                size={isLousa ? 'xl' : 'md'}
-                variant={wrongFlash === line.id ? 'danger' : 'secondary'}
-                onClick={() => handlePick(line.id)}
-              >
+              <GameButton key={line.id} highContrast={isHighContrast} size={isLousa ? 'xl' : 'md'} variant={wrongFlash === line.id ? 'danger' : 'secondary'} onClick={() => handlePick(line.id)}>
                 {line.text}
               </GameButton>
             ))}
