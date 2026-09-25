@@ -19,6 +19,7 @@ interface GameShellProps {
     complete: (finalScore: number) => void;
     isHighContrast: boolean;
     isFixedFooter: boolean;
+    isLousa: boolean;
   }) => ReactNode;
 }
 
@@ -61,6 +62,7 @@ export function GameShell({
 
   const isHighContrast = settings.visualMode === 'alto_contraste';
   const isFixedFooter = settings.layoutMode === 'rodape_fixo';
+  const isLousa = settings.deviceMode === 'lousa';
 
   return (
     <GameLayout
@@ -79,6 +81,7 @@ export function GameShell({
         complete: handleComplete,
         isHighContrast,
         isFixedFooter,
+        isLousa,
       })}
     </GameLayout>
   );
