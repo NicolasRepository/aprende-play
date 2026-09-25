@@ -41,9 +41,7 @@ export function AccessibilityPanel({
         onClick={() => setOpen(!open)}
         className={cn(
           'p-2 rounded-lg transition-colors',
-          isHighContrast
-            ? 'text-white border-2 border-white hover:bg-white hover:text-black'
-            : 'text-brand-600 hover:bg-brand-50 border-2 border-transparent'
+          isHighContrast ? 'bg-white border-black text-black' : 'text-brand-600 hover:bg-brand-50 border-2 border-transparent'
         )}
         aria-label="Configurações de acessibilidade"
       >
@@ -59,12 +57,10 @@ export function AccessibilityPanel({
           <div
             className={cn(
               'absolute right-0 top-full mt-2 w-72 rounded-xl border-2 shadow-xl z-50 p-4 space-y-4',
-              isHighContrast
-                ? 'bg-black border-white text-white'
-                : 'bg-white border-brand-200 text-gray-900'
+              isHighContrast ? 'bg-white border-black text-black' : 'bg-white border-brand-200 text-gray-900'
             )}
           >
-            <h3 className={cn('font-bold text-sm uppercase tracking-wide', isHighContrast ? 'text-white' : 'text-brand-600')}>
+            <h3 className={cn('font-bold text-sm uppercase tracking-wide', isHighContrast ? 'text-black' : 'text-brand-600')}>
               Configurações do Jogo
             </h3>
 
@@ -81,12 +77,8 @@ export function AccessibilityPanel({
                     className={cn(
                       'px-3 py-2 rounded-lg text-sm font-medium transition-all',
                       settings.deviceMode === opt.value
-                        ? isHighContrast
-                          ? 'bg-white text-black border-2 border-white'
-                          : 'bg-brand-500 text-white'
-                        : isHighContrast
-                          ? 'border-2 border-white text-white hover:bg-white hover:text-black'
-                          : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                        ?isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-500 text-white'
+                        : isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
                     )}
                   >
                     <span className="block text-lg mb-0.5">{opt.icon}</span>
@@ -109,12 +101,8 @@ export function AccessibilityPanel({
                     className={cn(
                       'px-3 py-2 rounded-lg text-sm font-medium transition-all',
                       settings.visualMode === opt.value
-                        ? isHighContrast
-                          ? 'bg-white text-black border-2 border-white'
-                          : 'bg-brand-500 text-white'
-                        : isHighContrast
-                          ? 'border-2 border-white text-white hover:bg-white hover:text-black'
-                          : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                        ? isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-500 text-white'
+                        : isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
                     )}
                   >
                     {opt.label}
@@ -136,12 +124,8 @@ export function AccessibilityPanel({
                     className={cn(
                       'px-3 py-2 rounded-lg text-sm font-medium transition-all',
                       settings.layoutMode === opt.value
-                        ? isHighContrast
-                          ? 'bg-white text-black border-2 border-white'
-                          : 'bg-brand-500 text-white'
-                        : isHighContrast
-                          ? 'border-2 border-white text-white hover:bg-white hover:text-black'
-                          : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                        ? isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-500 text-white'
+                        : isHighContrast ? 'bg-white border-black text-black' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
                     )}
                   >
                     {opt.label}
