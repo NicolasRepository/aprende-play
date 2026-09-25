@@ -57,7 +57,7 @@ export function AccessibilityPanel({
           <div
             className={cn(
               'absolute right-0 top-full mt-2 w-72 rounded-xl border-2 shadow-xl z-50 p-4 space-y-4',
-              isHighContrast ? 'bg-white border-black text-black' : 'bg-white border-brand-200 text-gray-900'
+              isHighContrast ? 'bg-white border-black text-black' : 'bg-white border-brand-200 text-black-900'
             )}
           >
             <h3 className={cn('font-bold text-sm uppercase tracking-wide', isHighContrast ? 'text-black' : 'text-brand-600')}>
@@ -66,7 +66,7 @@ export function AccessibilityPanel({
 
             {/* Modo Dispositivo */}
             <div>
-              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-gray-300' : 'text-gray-500')}>
+              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-black-300' : 'text-black-500')}>
                 Modo Dispositivo
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -90,7 +90,7 @@ export function AccessibilityPanel({
 
             {/* Modo Visual */}
             <div>
-              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-gray-300' : 'text-gray-500')}>
+              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-black-300' : 'text-black-500')}>
                 Modo Visual
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -113,7 +113,7 @@ export function AccessibilityPanel({
 
             {/* Posicionamento */}
             <div>
-              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-gray-300' : 'text-gray-500')}>
+              <label className={cn('text-xs font-semibold mb-2 block', isHighContrast ? 'text-black-300' : 'text-black-500')}>
                 Posicionamento
               </label>
               <div className="grid grid-cols-2 gap-2">
