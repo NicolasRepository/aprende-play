@@ -135,7 +135,7 @@ export default function CadastroPage() {
                 <Check className="h-3.5 w-3.5 text-brand-500" /> Acompanhamento de progresso
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
-                <Check className="h-3.5 w-3.5 text-brand-500" /> Grátis para sempre
+                <Check className="h-3.5 w-3.5 text-brand-500" /> Grátis
               </div>
             </div>
 
