@@ -4,6 +4,7 @@ import { useState, useCallback, type ReactNode } from 'react';
 import type { AccessibilitySettings, GameProps } from '@/lib/types';
 import { DEFAULT_ACCESSIBILITY } from '@/lib/types';
 import { GameLayout } from './GameLayout';
+import { GameCompleteScreen } from './GameCompleteScreen';
 
 interface GameShellProps {
   title: string;
@@ -23,16 +24,12 @@ interface GameShellProps {
   }) => ReactNode;
 }
 
-export function GameShell({
-  title,
-  description,
-  onExit,
-  onScore,
-  onComplete,
-  children,
-}: GameShellProps) {
+export function GameShell({ title, description, onExit, onScore, onComplete, children }: GameShellProps) {
   const [settings, setSettings] = useState<AccessibilitySettings>(DEFAULT_ACCESSIBILITY);
   const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
 
   const handleScore = useCallback(
     (newScore: number) => {
@@ -54,11 +51,19 @@ export function GameShell({
   );
 
   const handleComplete = useCallback(
-    (finalScore: number) => {
-      onComplete?.(finalScore);
+    (finishedScore: number) => {
+      setFinalScore(finishedScore);
+      setFinished(true);
+      onComplete?.(finishedScore);
     },
     [onComplete]
   );
+
+  const handlePlayAgain = useCallback(() => {
+    setFinished(false);
+    setScore(0);
+    setResetKey((k) => k + 1);
+  }, []);
 
   const isHighContrast = settings.visualMode === 'alto_contraste';
   const isFixedFooter = settings.layoutMode === 'rodape_fixo';
@@ -73,16 +78,27 @@ export function GameShell({
       score={score}
       onExit={onExit}
     >
-      {children({
-        settings,
-        score,
-        setScore: handleScore,
-        addScore: handleAddScore,
-        complete: handleComplete,
-        isHighContrast,
-        isFixedFooter,
-        isLousa,
-      })}
+      {finished ? (
+        <GameCompleteScreen
+          score={finalScore}
+          isHighContrast={isHighContrast}
+          onPlayAgain={handlePlayAgain}
+          onExit={onExit}
+        />
+      ) : (
+        <div key={resetKey}>
+          {children({
+            settings,
+            score,
+            setScore: handleScore,
+            addScore: handleAddScore,
+            complete: handleComplete,
+            isHighContrast,
+            isFixedFooter,
+            isLousa,
+          })}
+        </div>
+      )}
     </GameLayout>
   );
 }
