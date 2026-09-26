@@ -65,7 +65,9 @@ export default function HomePage() {
               </div>
               <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900">
                 Jogos educacionais para{' '}
-                <span className="text-brand-500">alfabetização</span> e ensino fundamental
+                <span className="text-brand-500">Ensino Infantil</span>{' '}
+                e{' '}
+                <span className="text-brand-500">Ensino Fundamental</span>
               </h1>
               <p className="text-lg text-gray-600 max-w-lg">
                 Aprende Play é uma plataforma de jogos educacionais que torna o aprendizado
