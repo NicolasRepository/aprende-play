@@ -301,8 +301,8 @@ export default function ConteudoPage() {
               <Label htmlFor="artist">Artista</Label>
               <Input id="artist" value={artist} onChange={(e) => setArtist(e.target.value)} />
             </div>
-            <div className="space-y-2">
-              <Label> Alfabetização</Label>
+            {/*<div className="space-y-2">
+              <Label>Alfabetização</Label>
               <Select value={levelId} onValueChange={setLevelId}>
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
@@ -311,7 +311,7 @@ export default function ConteudoPage() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </div>*/}
             <div className="space-y-2">
               <Label>Dificuldade</Label>
               <Select value={difficulty} onValueChange={(v) => setDifficulty(v as typeof difficulty)}>
