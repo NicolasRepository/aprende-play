@@ -78,11 +78,6 @@ export function SongSelectScreen({ onSelect, onExit }: Props) {
                 <GameTextBox variant="default" className="hover:border-brand-400 cursor-pointer transition-colors">
                   <span className="font-semibold">{song.title}</span>
                   {song.artist && <span className="text-gray-400 text-sm"> — {song.artist}</span>}
-                  {song.literacy_level && (
-                    <span className="ml-2 inline-block rounded-full bg-brand-100 px-2 py-0.5 text-xs text-brand-700">
-                      {song.literacy_level.name}
-                    </span>
-                  )}
                 </GameTextBox>
               </button>
             ))}
