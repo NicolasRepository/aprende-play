@@ -254,7 +254,7 @@ export default function ConteudoPage() {
                     Esta palavra será usada nos 3 jogos de Lotoleitura (vogais, consoantes e completa).
                   </p>
                 </div>
-                <div className="space-y-2">
+                {/*<div className="space-y-2">
                   <Label>Nível de Alfabetização</Label>
                   <Select value={lotoLevelId} onValueChange={setLotoLevelId}>
                     <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
@@ -264,7 +264,7 @@ export default function ConteudoPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
+                </div>*/}
                 <div className="space-y-2">
                   <Label htmlFor="lotoImage">Imagem</Label>
                   <Input
@@ -302,7 +302,7 @@ export default function ConteudoPage() {
               <Input id="artist" value={artist} onChange={(e) => setArtist(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Nível de Alfabetização</Label>
+              <Label> Alfabetização</Label>
               <Select value={levelId} onValueChange={setLevelId}>
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
