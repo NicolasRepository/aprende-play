@@ -68,7 +68,7 @@ export function FatiadoContent({
   const [pickedIds, setPickedIds] = useState<string[]>([]);
   const [wrongFlash, setWrongFlash] = useState<string | null>(null);
 
-  const displayText = (line: PlayLine) => (blankGapWords && line.gap ? blankOutWord(line.text, line.gap.word) : line.text);
+  const displayText = (line: PlayLine) => (blankGapWords && line.gap ? blankOutWord(line.text, line.gap.word) : line.text).toUpperCase(); // ALTERADO
 
   const finish = (correctCount: number) => {
     const finalScore = correctCount * 10;
