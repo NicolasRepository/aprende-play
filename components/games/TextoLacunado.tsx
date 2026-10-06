@@ -106,8 +106,8 @@ export function LacunadoContent({
               variant={answer ? (isCorrectAnswer ? 'success' : 'error') : isCurrent ? 'highlight' : 'default'}
               size={isLousa ? 'lg' : 'md'}
             >
-              {display}
-              {answer && !isCorrectAnswer && <span className="ml-2 text-sm opacity-70">(correto: {line.gap!.word})</span>}
+              {display.toUpperCase()} {/* ALTERADO */}
+              {answer && !isCorrectAnswer && <span className="ml-2 text-sm opacity-70">(correto: {line.gap!.word.toUpperCase()})</span>} {/* ALTERADO */}
             </GameTextBox>
           );
         })}
@@ -118,7 +118,7 @@ export function LacunadoContent({
           <div className={cn('grid gap-2', isLousa ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-3 md:grid-cols-4')}>
             {current.gap.options.map((opt) => (
               <GameButton key={opt} highContrast={isHighContrast} size={isLousa ? 'xl' : 'md'} variant="secondary" onClick={() => handlePick(opt)}>
-                {opt}
+                {opt.toUpperCase()} {/* ALTERADO */}
               </GameButton>
             ))}
           </div>
